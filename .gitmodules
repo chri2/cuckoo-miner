@@ -1,4 +1,4 @@
 [submodule "src/cuckoo_sys/plugins/cuckoo"]
 	path = src/cuckoo_sys/plugins/cuckoo
-	url = https://github.com/mimblewimble/cuckoo
+	url = https://github.com/chri2/cuckoo
 	branch = cuckoo-miner-mods
