@@ -8,9 +8,9 @@ set (OPT "-O3")
 set (DOPT "-DPREFETCH")
 
 set (FLAGS "-Wno-format -Wno-deprecated-declarations -D_POSIX_C_SOURCE=200112L ${OPT} ${DOPT} -I. ${CPPFLAGS} -pthread")
-set (GPP_FLAGS "-march=native -m64 ${FLAGS}")
+set (GPP_FLAGS "-march=native ${FLAGS}")
 set (CFLAGS "-Wno-format -fomit-frame-pointer ${OPT}")
-set (GCC_FLAGS "-m64 -std=gnu11 ${CFLAGS}")
+set (GCC_FLAGS "-std=gnu11 ${CFLAGS}")
 
 set (CUDA_HOST_COMPILER_OVERRIDE $ENV{CUDA_HOST_COMPILER})
 
@@ -37,19 +37,20 @@ foreach(CUCKOO_SIZE 16 30)
     set_target_properties(lean_cpu_${CUCKOO_SIZE} PROPERTIES COMPILE_FLAGS "${GPP_FLAGS} -DATOMIC -DEDGEBITS=${EDGEBITS}" PREFIX "" SUFFIX ".cuckooplugin" )
 endforeach(CUCKOO_SIZE)
 
-#matrix miner (mean_cpu) targets
-foreach(CUCKOO_SIZE 16 30)
-    if (CUCKOO_SIZE EQUAL 16)
-       set (DXBITSFLAG "-DXBITS=0")
-    else()
-       set (DXBITSFLAG "")
-    endif()
-
-    add_library(mean_cpu_${CUCKOO_SIZE} SHARED ${MEAN_MINER_SOURCES})
-    #get edgebits
-    math (EXPR EDGEBITS ${CUCKOO_SIZE}-1)
-    set_target_properties(mean_cpu_${CUCKOO_SIZE} PROPERTIES COMPILE_FLAGS "${GPP_FLAGS} -mavx2 ${DXBITSFLAG} -DNSIPHASH=8 -DSAVEEDGES -DEDGEBITS=${EDGEBITS}" PREFIX "" SUFFIX ".cuckooplugin")
-endforeach(CUCKOO_SIZE)
+## uses stuff only available on specific intel processors
+## #matrix miner (mean_cpu) targets
+## foreach(CUCKOO_SIZE 16 30)
+##     if (CUCKOO_SIZE EQUAL 16)
+##        set (DXBITSFLAG "-DXBITS=0")
+##     else()
+##        set (DXBITSFLAG "")
+##     endif()
+## 
+##     add_library(mean_cpu_${CUCKOO_SIZE} SHARED ${MEAN_MINER_SOURCES})
+##     #get edgebits
+##     math (EXPR EDGEBITS ${CUCKOO_SIZE}-1)
+##     set_target_properties(mean_cpu_${CUCKOO_SIZE} PROPERTIES COMPILE_FLAGS "${GPP_FLAGS} -mavx2 ${DXBITSFLAG} -DNSIPHASH=8 -DSAVEEDGES -DEDGEBITS=${EDGEBITS}" PREFIX "" SUFFIX ".cuckooplugin")
+## endforeach(CUCKOO_SIZE)
 
 #matrix miner (mean_cpu) compatible mode targets, for older processors
 foreach(CUCKOO_SIZE 16 30)
